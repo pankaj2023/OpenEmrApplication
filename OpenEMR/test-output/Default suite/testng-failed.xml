@@ -5,7 +5,10 @@
     <classes>
       <class name="com.vfislk.test.TestLogin">
         <methods>
-          <include name="validCredential"/>
+          <include name="invalidCredentialTest"/>
+          <include name="tearDown"/>
+          <include name="validCredentialTest"/>
+          <include name="setUp"/>
         </methods>
       </class> <!-- com.vfislk.test.TestLogin -->
     </classes>

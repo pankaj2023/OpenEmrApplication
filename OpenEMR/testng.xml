@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="OpenEMR Suite">
+
+	<parameter name="browsername" value="ch"></parameter>
+	<test thread-count="5" name="Login Test">
+		<classes>
+			<class name="com.vfislk.test.TestLogin">
+				<methods>
+					<include name="validCredentialTest"></include>
+				</methods>
+			</class>
+		</classes>
+	</test> <!-- Test -->
+</suite> <!-- Suite -->
