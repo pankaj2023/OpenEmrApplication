@@ -3,6 +3,7 @@
 <suite name="OpenEMR Suite">
 
 	<parameter name="browsername" value="ch"></parameter>
+	
 	<test thread-count="5" name="Login Test">
 		<classes>
 			<class name="com.vfislk.test.TestLogin">

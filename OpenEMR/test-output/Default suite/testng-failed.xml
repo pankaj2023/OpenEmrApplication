@@ -5,7 +5,6 @@
     <classes>
       <class name="com.vfislk.test.TestLogin">
         <methods>
-          <include name="invalidCredentialTest"/>
           <include name="tearDown"/>
           <include name="validCredentialTest"/>
           <include name="setUp"/>

@@ -16,69 +16,40 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+import com.vfislk.openemrbase.WebDriverWrapper;
+import com.vfislk.openemrpages.DashboardPage;
+import com.vfislk.openemrpages.LoginPage;
+import com.vfislk.utilities.DataProviderUtils;
 
 
-public class TestLogin {
 
-	private WebDriver driver;
+public class TestLogin extends WebDriverWrapper {
 
-	@BeforeMethod
-	@Parameters({"browsername"})
-	public void setUp(@Optional("ch") String browser) {
-		
-		switch (browser.toLowerCase()) {
-		case "ff":
-		case "firefox":
-			System.setProperty("webdriver.gecko.driver", "src/test/resources/driver/geckodriver.exe");
-			driver = new FirefoxDriver();
-			break;
-		case "ie":
-			System.setProperty("webdriver.ie.driver", "src/test/resources/driver/IEDriverServer.exe");
-
-			break;
-		default:
-			System.setProperty("webdriver.chrome.driver", "src/test/resources/driver/chromedriver.exe");
-			driver = new ChromeDriver();
-			break;
-		}
-
-		driver.manage().window().maximize();
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-		driver.get("https://demo.openemr.io/a/openemr/index.php");
-	}
-
-	@AfterMethod
-	public void tearDown() {
-		driver.quit();
-	}
 
 	@Test
 	public void invalidCredentialTest() {
-		driver.findElement(By.id("authUser")).sendKeys("admin123");
-		driver.findElement(By.id("clearPass")).sendKeys("pass");
-		Select selectLanguage = new Select(driver.findElement(By.name("languageChoice")));
-		selectLanguage.selectByVisibleText("English (Indian)");
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		LoginPage login = new LoginPage(driver);
+		login.enterUsername("admin123");
+		login.enterPassword("pass");
+		login.selectLanguageByText("Dutch");
+		login.clickOnLogin();
 
-		String actualValue = driver.findElement(By.xpath("//div[contains(text(),'Invalid')]")).getText().trim();
-
-		Assert.assertEquals(actualValue, "Invalid username or password");
+		Assert.assertEquals(login.getInvalidErrorMessage(), "Invalid username or password");
 	}
+	
+	@Test(dataProviderClass = DataProviderUtils.class,dataProvider = "validCredentialData",description = "Valid Credential Test")
+	public void validCredentialTest(String username,String password,String language,String expectedValue) {
+	
+		LoginPage login = new LoginPage(driver);
+		login.enterUsername(username);
+		login.enterPassword(password);
+		login.selectLanguageByText(language);
+		login.clickOnLogin();
 
-	@Test(description = "Valid Credential Test")
-	public void validCredentialTest() {
-		driver.findElement(By.id("authUser")).sendKeys("admin");
-		driver.findElement(By.id("clearPass")).sendKeys("pass");
-		Select selectLanguage = new Select(driver.findElement(By.name("languageChoice")));
-		selectLanguage.selectByVisibleText("English (Indian)");
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		DashboardPage dashboard = new DashboardPage(driver);
+		dashboard.waitForPresenceOfCalendarText();
 
-		WebDriverWait wait = new WebDriverWait(driver, 50);
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[text()='Calendar']")));
-
-		String actualValue = driver.getTitle();
-		Assert.assertEquals(actualValue, "patient OS");
-
+		Assert.assertEquals(dashboard.getCurrentTitle(), expectedValue);
 	}
 
 }
