@@ -1,9 +1,9 @@
-package com.vfislk.test;
+	package com.vfislk.test;
 
 
 import java.io.FileInputStream;
 import java.io.IOException;
-
+import java.util.Properties;
 
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -13,15 +13,27 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.testng.annotations.Test;
 
 
-
 public class DemoTest {
+
+	@Test
+	public void readProperties() throws IOException
+	{
+		FileInputStream file=new FileInputStream("src/test/resources/testdata/data.properties");
+		
+		Properties prop=new Properties();
+		prop.load(file);
+		
+		String browserName=prop.getProperty("browser1", "chrome");
+		System.out.println(browserName);
+		
+	}
 
 	@Test
 	public void excelRead() throws IOException {		
 		FileInputStream file = new FileInputStream("src/test/resources/testdata/OpenEMRData.xlsx"); // location - read
 		
 		XSSFWorkbook book = new XSSFWorkbook(file); 
-		XSSFSheet sheet = book.getSheet("Sheet1");
+		XSSFSheet sheet = book.getSheet("addPatientTest");
 		
 		int rowCount=sheet.getPhysicalNumberOfRows();
 		System.out.println(rowCount);
@@ -48,6 +60,5 @@ public class DemoTest {
 		book.close();
 		file.close();
 		
-	}
-	
+	}	
 }	
