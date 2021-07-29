@@ -1,40 +1,53 @@
 package com.vfislk.test;
-import org.testng.annotations.DataProvider;
+
+
+import java.io.FileInputStream;
+import java.io.IOException;
+
+
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.testng.annotations.Test;
+
+
 
 public class DemoTest {
 
-	//john,john123
-	//peter,peter123
-	//mark,mark123
-	//paul,paul123
-	
-	@DataProvider
-	public Object[][] validData()
-	{
-		Object[][] main=new Object[4][2];
-		// i --> number of testcase
-		// j --> number of parameter
-		main[0][0]="john";
-		main[0][1]="john123";
+	@Test
+	public void excelRead() throws IOException {		
+		FileInputStream file = new FileInputStream("src/test/resources/testdata/OpenEMRData.xlsx"); // location - read
 		
-		main[1][0]="peter";
-		main[1][1]="peter123";
+		XSSFWorkbook book = new XSSFWorkbook(file); 
+		XSSFSheet sheet = book.getSheet("Sheet1");
 		
-		main[2][0]="mark";
-		main[2][1]="mark123";
+		int rowCount=sheet.getPhysicalNumberOfRows();
+		System.out.println(rowCount);
 		
-		main[3][0]="paul";
-		main[3][1]="paul123";
+		int cellCount=sheet.getRow(0).getPhysicalNumberOfCells();
+		System.out.println(cellCount);
 		
-		return main;
-	}
-	
-	
-	@Test(dataProvider = "validData")
-	public void validTest(String username,String password)
-	{
-		System.out.println(username+password);
-	}
+		DataFormatter format = new DataFormatter();
+		
+		Object[][] main=new Object[rowCount-1][cellCount];
+		
+		for (int r = 1; r < rowCount; r++) 
+		{
+			XSSFRow row = sheet.getRow(r);
+			for (int c = 0; c < cellCount; c++) 
+			{		
+				XSSFCell cell = row.getCell(c);		
+				String cellValue = format.formatCellValue(cell);
+				System.out.println(cellValue);
+				main[r-1][c]=cellValue;
+			}
+		}
 
-}
+		book.close();
+		file.close();
+		
+	}
+	
+}	

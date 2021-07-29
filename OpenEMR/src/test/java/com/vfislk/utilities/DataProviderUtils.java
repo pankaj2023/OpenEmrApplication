@@ -1,9 +1,40 @@
 package com.vfislk.utilities;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+
 import org.testng.annotations.DataProvider;
 
 public class DataProviderUtils {
 
+
+	@DataProvider
+	public Object[][] commonDataProvider(Method method) throws IOException
+	{
+		 String testMethodName=method.getName();		
+		 Object[][] main= ExcelUtils.getSheetIntoObjectArray("src/test/resources/testdata/OpenEMRData.xlsx", testMethodName);
+		 return main;
+	}
+	
+//	@DataProvider
+//	public Object[][] addPatientData() throws IOException
+//	{
+//		 Object[][] main= ExcelUtils.getSheetIntoObjectArray("src/test/resources/testdata/OpenEMRData.xlsx", "addPatientTest");
+//		 return main;
+//	}
+//	
+//	@DataProvider
+//	public Object[][] invalidCredentialData() throws IOException
+//	{
+//		 Object[][] main= ExcelUtils.getSheetIntoObjectArray("src/test/resources/testdata/OpenEMRData.xlsx", "invalidCredentialTest");
+//		 return main;
+//	}
+	
+
+	// admin,pass,English (Indian),OpenEMR
+	// physician,physician,English (Indian),OpenEMR
+	// accountant,accountant,English (Indian),OpenEMR
+	
 	@DataProvider
 	public Object[][] validCredentialData() {
 		Object[][] main = new Object[3][4];
@@ -24,6 +55,5 @@ public class DataProviderUtils {
 		main[2][3] = "OpenEMR";
 
 		return main;
-
 	}
 }
